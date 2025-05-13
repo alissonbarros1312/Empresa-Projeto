@@ -45,6 +45,7 @@ public class EmpresaView {
                 break;
             case 5:
                 empresaController.salvarDados();
+                break;
             case 0:
                 System.out.println("Saindo....");
                 break;

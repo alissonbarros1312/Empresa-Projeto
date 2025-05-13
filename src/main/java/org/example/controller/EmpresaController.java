@@ -144,13 +144,13 @@ public class EmpresaController {
     }
 
     public void salvarDados (){
-        empresa.salvarFuncionariosEmArquivo("dados/funcionarios.txt");
-        empresa.salvarGerentesEmArquivo("dados/gerentes.txt");
+        empresa.salvarFuncionariosEmArquivo("src/dados/funcionarios.txt");
+        empresa.salvarGerentesEmArquivo("src/dados/gerentes.txt");
     }
 
     public void carregarDados(){
-        empresa.carregarFuncionariosDeArquivo("dados/funcionarios.txt");
-        empresa.carregarGerentesDeArquivos("dados/gerentes.txt");
+        empresa.carregarFuncionariosDeArquivo("src/dados/funcionarios.txt");
+        empresa.carregarGerentesDeArquivos("src/dados/gerentes.txt");
     }
 
 }
