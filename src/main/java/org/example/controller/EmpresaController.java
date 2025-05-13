@@ -5,7 +5,12 @@ import org.example.model.*;
 import java.util.Scanner;
 
 public class EmpresaController {
-    EmpresaModel empresa = new EmpresaModel();
+    EmpresaModel empresa;
+
+    public EmpresaController() {
+        empresa = new EmpresaModel();
+        carregarDados();
+    }
 
     public void cadastrarFuncionario(Scanner sc) {
         FuncionarioModel funcionario = capturaFuncionario(sc);
@@ -136,6 +141,16 @@ public class EmpresaController {
                 System.out.println("Numero invalido");
             }
         }
+    }
+
+    public void salvarDados (){
+        empresa.salvarFuncionariosEmArquivo("dados/funcionarios.txt");
+        empresa.salvarGerentesEmArquivo("dados/gerentes.txt");
+    }
+
+    public void carregarDados(){
+        empresa.carregarFuncionariosDeArquivo("dados/funcionarios.txt");
+        empresa.carregarGerentesDeArquivos("dados/gerentes.txt");
     }
 
 }

@@ -18,6 +18,7 @@ public class EmpresaView {
                              "\n2 - Cadastrar Gerente" +
                              "\n3 - Exibir funcionarios cadastrados" +
                              "\n4 - Exibir Gerentes cadastrados" +
+                             "\n5 - Salvar Dados" +
                              "\n0 - Sair");
             System.out.print("Digite a opção desejada: ");
             option = sc.nextInt();
@@ -42,6 +43,8 @@ public class EmpresaView {
             case 4:
                 empresaController.exibirGerentes();
                 break;
+            case 5:
+                empresaController.salvarDados();
             case 0:
                 System.out.println("Saindo....");
                 break;
