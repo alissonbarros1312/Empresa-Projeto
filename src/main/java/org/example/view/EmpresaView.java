@@ -47,10 +47,26 @@ public class EmpresaView {
                 empresaController.salvarDados();
                 break;
             case 0:
-                System.out.println("Saindo....");
+                confirmaSaida(sc);
                 break;
             default:
                 System.out.println("Opção inválida");
+        }
+    }
+
+    private void confirmaSaida(Scanner sc){
+        System.out.print("Deseja sair sem salvar? (S/N) : ");
+        String resp = sc.nextLine();
+
+        if(resp.equalsIgnoreCase("n")) {
+            empresaController.salvarDados();
+            System.out.println("Saindo....");
+            System.exit(0);
+        } else if (resp.equalsIgnoreCase("s")){
+            System.out.println("Saindo sem salvar ...");
+            System.exit(0);
+        } else {
+            System.out.println("Opção inválida, voltando ao menu ...");
         }
     }
 }

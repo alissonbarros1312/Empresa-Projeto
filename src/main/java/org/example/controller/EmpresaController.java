@@ -30,24 +30,6 @@ public class EmpresaController {
         empresa.exibirGerentes();
     }
 
-    public void capturaDados(Scanner sc, TipoPessoa tipo) {
-
-        switch (tipo) {
-            case FUNCIONARIO:
-                FuncionarioModel funcionario = capturaFuncionario(sc);
-                empresa.adicionaFuncionario(funcionario);
-                break;
-
-            case GERENTE:
-                GerenteModel gerente = capturaGerente(sc);
-                empresa.adicionaGerente(gerente);
-                break;
-
-            default:
-                System.out.println("Tipo de pessoa Invalido");
-        }
-    }
-
     public FuncionarioModel capturaFuncionario(Scanner sc) {
         String msgNome = "Digite o nome: ";
         String nome = lerString(sc, msgNome);
@@ -146,11 +128,13 @@ public class EmpresaController {
     public void salvarDados (){
         empresa.salvarFuncionariosEmArquivo("src/dados/funcionarios.txt");
         empresa.salvarGerentesEmArquivo("src/dados/gerentes.txt");
+        System.out.println("Salvo com sucesso!");
     }
 
     public void carregarDados(){
         empresa.carregarFuncionariosDeArquivo("src/dados/funcionarios.txt");
         empresa.carregarGerentesDeArquivos("src/dados/gerentes.txt");
+        System.out.println("Dados carregados!");
     }
 
 }
