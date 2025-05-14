@@ -11,7 +11,8 @@ public class EmpresaView {
     EmpresaController empresaController = new EmpresaController();
 
     public void iniciaPrograma(){
-        int option = 1;
+        int option = -1;
+
         do {
             System.out.println("--------- SISTEMA DA EMPRESA ---------");
             System.out.println("1 - Cadastrar funcionário" +
@@ -21,10 +22,18 @@ public class EmpresaView {
                              "\n5 - Salvar Dados" +
                              "\n0 - Sair");
             System.out.print("Digite a opção desejada: ");
-            option = sc.nextInt();
+
+            try {
+                option = Integer.parseInt(sc.nextLine());
+            } catch (NumberFormatException e){
+                System.out.println("Entrada inválida. Digite um número");
+                option = -1;
+                continue;
+            }
+
             System.out.println("--------------------------------------");
             System.out.println();
-            sc.nextLine();
+
             optionResponse(option);
         } while (option != 0);
     }
