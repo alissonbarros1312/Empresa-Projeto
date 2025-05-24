@@ -35,8 +35,18 @@ public class ValidacoesModel {
 
     public static boolean validaPessoa(PessoaModel pessoa) {
         if (pessoa == null) {
+            System.out.println("Pessoa inválido");
             return false;
         }
         return true;
     }
+
+    public static boolean validaID(int id){
+        if(id < 0){
+            System.out.println("ID inválido");
+            return false;
+        }
+        return true;
+    }
+
 }

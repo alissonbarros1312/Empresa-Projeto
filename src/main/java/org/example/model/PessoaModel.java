@@ -3,6 +3,16 @@ package org.example.model;
 public abstract class PessoaModel {
     private String nome;
     private String cpf;
+    private int id = -1;
+
+    public PessoaModel() {
+    }
+
+    public PessoaModel(String nome, String cpf, int id) {
+        setNome(nome);
+        setCpf(cpf);
+        setId(id);
+    }
 
     public PessoaModel(String nome, String cpf) {
         setNome(nome);
@@ -27,6 +37,14 @@ public abstract class PessoaModel {
         if (ValidacoesModel.validaCpf(cpf)) {
             this.cpf = cpf;
         }
+    }
+
+    public int getId() {
+        return id;
+    }
+
+    public void setId(int id) {
+        this.id = id;
     }
 
     public void exibirInfo(){

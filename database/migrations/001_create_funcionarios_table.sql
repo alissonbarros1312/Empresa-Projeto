@@ -1,0 +1,7 @@
+CREATE TABLE funcionarios (
+	id INT AUTO_INCREMENT PRIMARY KEY,
+    nome VARCHAR(100) NOT NULL,
+    cpf VARCHAR(20) NOT NULL UNIQUE,
+    setor VARCHAR(20),
+    salario DOUBLE
+);
