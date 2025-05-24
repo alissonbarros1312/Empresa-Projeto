@@ -1,8 +1,6 @@
 package org.example.view;
 
 import org.example.controller.EmpresaController;
-import org.example.model.EmpresaModel;
-import org.example.model.GerenteModel;
 
 import java.util.Scanner;
 
