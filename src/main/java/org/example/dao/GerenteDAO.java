@@ -1,5 +1,6 @@
 package org.example.dao;
 
+import org.example.model.FuncionarioModel;
 import org.example.model.GerenteModel;
 import org.example.model.ValidacoesModel;
 
@@ -12,26 +13,34 @@ import java.util.List;
 
 public class GerenteDAO {
     Connection connection;
+    FuncionarioDAO funcionarioDAO;
 
     public GerenteDAO(Connection connection) {
         this.connection = connection;
     }
 
     public void inserir(GerenteModel gerente) {
-        String sql = "INSERT INTO gerentes (nome, cpf, setor, salario, equipe) VALUES (?, ?, ?, ?, ?)";
+        int funcionarioId = funcionarioDAO.inserir(gerente);
+
+        if(funcionarioId == -1){
+            System.out.println("Erro ao inserir funcionario base para gerente");
+            return;
+        }
+
+        String sql = "INSERT INTO gerentes (id, equipe) VALUES (?, ?)";
 
         try (PreparedStatement stmt = connection.prepareStatement(sql)) {
 
-            stmt.setString(1, gerente.getNome());
-            stmt.setString(2, gerente.getCpf());
-            stmt.setString(3, gerente.getSetor());
-            stmt.setDouble(4, gerente.getSalario());
-            stmt.setInt(5, gerente.getEquipe());
+            stmt.setInt(1, funcionarioId);
+            stmt.setInt(2, gerente.getEquipe());
 
             int linhasAfetadas = stmt.executeUpdate();
 
             if (linhasAfetadas > 0) {
+                gerente.setId(funcionarioId);
                 System.out.println("Gerente inserido com sucesso");
+            } else {
+                System.out.println("Falha ao inserir gerente");
             }
 
         } catch (SQLException e) {
@@ -46,16 +55,14 @@ public class GerenteDAO {
             return;
         }
 
-        String sql = "UPDATE gerentes SET nome = ?, cpf = ?, setor = ?, salario = ?, equipe = ? WHERE id = ?";
+        funcionarioDAO.atualizar(gerente);
+
+        String sql = "UPDATE gerentes SET equipe = ? WHERE id = ?";
 
         try (PreparedStatement stmt = connection.prepareStatement(sql)) {
 
-            stmt.setString(1, gerente.getNome());
-            stmt.setString(2, gerente.getCpf());
-            stmt.setString(3, gerente.getSetor());
-            stmt.setDouble(4, gerente.getSalario());
-            stmt.setInt(5, gerente.getEquipe());
-            stmt.setInt(6, gerente.getId());
+            stmt.setInt(1, gerente.getEquipe());
+            stmt.setInt(2, gerente.getId());
 
             int linhasAfetadas = stmt.executeUpdate();
 
@@ -85,6 +92,7 @@ public class GerenteDAO {
 
             if (linhasAfetadas > 0) {
                 System.out.println("Gerente removido com sucesso");
+                funcionarioDAO.remover(id);
             } else {
                 System.out.println("Nenhum gerente encontrado com o ID informado");
             }
@@ -107,18 +115,18 @@ public class GerenteDAO {
                 System.out.println("ID inválido");
                 throw new SQLException("ID Inválido");
             }
-
             stmt.setInt(1, id);
-            try (ResultSet rs = stmt.executeQuery()) {
 
+            try (ResultSet rs = stmt.executeQuery()) {
                 if (rs.next()) {
-                    String nome = rs.getString("nome");
-                    String cpf = rs.getString("cpf");
-                    String setor = rs.getString("setor");
-                    double salario = rs.getDouble("salario");
+                    FuncionarioModel funcionario = funcionarioDAO.buscaPorId(id);
                     int equipe = rs.getInt("equipe");
 
-                    gerente = new GerenteModel(nome, cpf, setor, salario, equipe);
+                    gerente = new GerenteModel(funcionario.getNome(),
+                                               funcionario.getCpf(),
+                                               funcionario.getSetor(),
+                                               funcionario.getSalario(),
+                                               equipe);
                     gerente.setId(rs.getInt("id"));
                 }
 
@@ -140,16 +148,20 @@ public class GerenteDAO {
              ResultSet rs = stmt.executeQuery()) {
 
             while (rs.next()) {
-                String nome = rs.getString("nome");
-                String cpf = rs.getString("cpf");
-                String setor = rs.getString("setor");
-                double salario = rs.getDouble("salario");
                 int equipe = rs.getInt("equipe");
+                int id = rs.getInt("id");
+                FuncionarioModel funcionario = funcionarioDAO.buscaPorId(id);
 
-                GerenteModel gerente = new GerenteModel(nome, cpf, setor, salario, equipe);
-                gerente.setId(rs.getInt("id"));
+                if(funcionario != null){
+                    GerenteModel gerente = new GerenteModel(funcionario.getNome(),
+                                                            funcionario.getCpf(),
+                                                            funcionario.getSetor(),
+                                                            funcionario.getSalario(),
+                                                            equipe);
+                    gerente.setId(rs.getInt("id"));
+                    gerentes.add(gerente);
 
-                gerentes.add(gerente);
+                }
             }
 
         } catch (SQLException e) {

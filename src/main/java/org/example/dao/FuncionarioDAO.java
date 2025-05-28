@@ -3,10 +3,7 @@ package org.example.dao;
 import org.example.model.FuncionarioModel;
 import org.example.model.ValidacoesModel;
 
-import java.sql.Connection;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-import java.sql.SQLException;
+import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -17,17 +14,31 @@ public class FuncionarioDAO {
         this.connection = connection;
     }
 
-    public void inserir(FuncionarioModel funcionario) {
+    public int inserir(FuncionarioModel funcionario) {
         String sql = "INSERT INTO funcionarios (nome, cpf, setor, salario) VALUES (?, ?, ?, ?)";
 
-        try (PreparedStatement stmt = connection.prepareStatement(sql)) {
+        try (PreparedStatement stmt = connection.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS)) {
             stmt.setString(1, funcionario.getNome());
             stmt.setString(2, funcionario.getCpf());
             stmt.setString(3, funcionario.getSetor());
             stmt.setDouble(4, funcionario.getSalario());
-            stmt.executeUpdate();
+            int linhasAfetadas = stmt.executeUpdate();
+
+            if(linhasAfetadas == 0){
+                throw new SQLException("Falha ao inserir funcionario");
+            }
+
+            try (ResultSet generatedKeys = stmt.getGeneratedKeys()){
+                if(generatedKeys.next()){
+                    return generatedKeys.getInt(1);
+                } else {
+                    throw new SQLException("Falha ao obter ID do funcionario inserido");
+                }
+            }
+
         } catch (SQLException e) {
             e.printStackTrace();
+            return -1;
         }
     }
 

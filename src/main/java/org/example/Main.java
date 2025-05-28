@@ -2,6 +2,7 @@ package org.example;
 
 import org.example.test.TesteConexao;
 import org.example.test.TesteFuncionarioDao;
+import org.example.test.TesteGerenteDao;
 import org.example.view.EmpresaView;
 
 //TIP To <b>Run</b> code, press <shortcut actionId="Run"/> or
@@ -15,8 +16,10 @@ public class Main {
 //        teste.testeConexao();
 //        TesteFuncionarioDao testeFuncionarioDao = new TesteFuncionarioDao();
 //        testeFuncionarioDao.testeFuncionario();
+        TesteGerenteDao testeGerenteDao = new TesteGerenteDao();
+        testeGerenteDao.testeGerente();
 
-        program.iniciaPrograma();
+//        program.iniciaPrograma();
 
     }
 }
