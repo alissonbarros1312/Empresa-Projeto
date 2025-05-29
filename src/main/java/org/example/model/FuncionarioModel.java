@@ -1,5 +1,7 @@
 package org.example.model;
 
+import org.example.util.ValidacoesUtil;
+
 public class FuncionarioModel extends PessoaModel{
     private String setor;
     private double salario;
@@ -24,7 +26,7 @@ public class FuncionarioModel extends PessoaModel{
     }
 
     public void setSetor(String setor) {
-        if(ValidacoesModel.validaString(setor)){
+        if(ValidacoesUtil.validaString(setor)){
            this.setor = setor;
         }
     }
@@ -34,7 +36,7 @@ public class FuncionarioModel extends PessoaModel{
     }
 
     public void setSalario(double salario) {
-        if(ValidacoesModel.validaSalario(salario)){
+        if(ValidacoesUtil.validaSalario(salario)){
             this.salario = salario;
         }
     }

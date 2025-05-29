@@ -2,7 +2,8 @@ package org.example.dao;
 
 import org.example.model.FuncionarioModel;
 import org.example.model.GerenteModel;
-import org.example.model.ValidacoesModel;
+import org.example.util.LoggerUtil;
+import org.example.util.ValidacoesUtil;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
@@ -17,13 +18,19 @@ public class GerenteDAO {
 
     public GerenteDAO(Connection connection) {
         this.connection = connection;
+        this.funcionarioDAO = new FuncionarioDAO(connection);
     }
 
     public void inserir(GerenteModel gerente) {
+        if(!ValidacoesUtil.validaPessoa(gerente)){
+            LoggerUtil.logWarning("DADOS INVÁLIDOS PARA GERENTE");
+            return;
+        }
+
         int funcionarioId = funcionarioDAO.inserir(gerente);
 
         if(funcionarioId == -1){
-            System.out.println("Erro ao inserir funcionario base para gerente");
+            LoggerUtil.logWarning("Erro ao inserir funcionario base para gerente");
             return;
         }
 
@@ -38,24 +45,25 @@ public class GerenteDAO {
 
             if (linhasAfetadas > 0) {
                 gerente.setId(funcionarioId);
-                System.out.println("Gerente inserido com sucesso");
+                LoggerUtil.logInfo("Gerente inserido com sucesso");
             } else {
-                System.out.println("Falha ao inserir gerente");
+                LoggerUtil.logWarning("Falha ao inserir gerente com id: " + funcionarioId);
             }
 
         } catch (SQLException e) {
-            e.printStackTrace();
-            System.err.println("Erro ao inserir o gerente: " + e.getMessage());
+            LoggerUtil.logErro("INSERIR GERENTE", e);
         }
     }
 
     public void atualizar(GerenteModel gerente) {
-        if (!ValidacoesModel.validaPessoa(gerente) || !ValidacoesModel.validaID(gerente.getId())) {
-            System.out.println("Erro, gerente inválido");
+        if (!ValidacoesUtil.validaPessoa(gerente) || !ValidacoesUtil.validaID(gerente.getId())) {
+            LoggerUtil.logWarning("Erro, gerente inválido");
             return;
         }
 
-        funcionarioDAO.atualizar(gerente);
+        if(!funcionarioDAO.atualizar(gerente)){
+            LoggerUtil.logWarning("ATUALIZAÇÃO DE DADOS BASE NÃO REALIZADA");
+        }
 
         String sql = "UPDATE gerentes SET equipe = ? WHERE id = ?";
 
@@ -67,13 +75,13 @@ public class GerenteDAO {
             int linhasAfetadas = stmt.executeUpdate();
 
             if (linhasAfetadas == 0) {
+                LoggerUtil.logWarning("NENHUMA ATUALIZAÇÃO REALIZADA PARA O GERENTE COM ID: " + gerente.getId());
                 throw new SQLException("Nenhuma atualização realizada");
             } else {
-                System.out.println("Gerente atualizado com sucesso");
+                LoggerUtil.logInfo("Gerente atualizado com sucesso");
             }
         } catch (SQLException e) {
-            e.printStackTrace();
-            System.err.println("Erro ao atualizar o gerente: " + e.getMessage());
+            LoggerUtil.logErro("ATUALIZAR GERENTE", e);
         }
     }
 
@@ -82,7 +90,8 @@ public class GerenteDAO {
 
         try (PreparedStatement stmt = connection.prepareStatement(sql)) {
 
-            if (!ValidacoesModel.validaID(id)) {
+            if (!ValidacoesUtil.validaID(id)) {
+                LoggerUtil.logWarning("ID INVÁLIDO = " + id);
                 throw new SQLException("ID Inválido");
             }
 
@@ -91,15 +100,14 @@ public class GerenteDAO {
             int linhasAfetadas = stmt.executeUpdate();
 
             if (linhasAfetadas > 0) {
-                System.out.println("Gerente removido com sucesso");
                 funcionarioDAO.remover(id);
+                LoggerUtil.logInfo("Gerente removido com sucesso");
             } else {
-                System.out.println("Nenhum gerente encontrado com o ID informado");
+                LoggerUtil.logWarning("Nenhum gerente encontrado com o ID informado");
             }
 
         } catch (SQLException e) {
-            e.printStackTrace();
-            System.err.println("Erro ao remover o gerente: " + e.getMessage());
+            LoggerUtil.logErro("REMOVER GERENTE", e);
         }
 
     }
@@ -111,8 +119,8 @@ public class GerenteDAO {
 
         try (PreparedStatement stmt = connection.prepareStatement(sql)) {
 
-            if (!ValidacoesModel.validaID(id)) {
-                System.out.println("ID inválido");
+            if (!ValidacoesUtil.validaID(id)) {
+                LoggerUtil.logWarning("ID inválido");
                 throw new SQLException("ID Inválido");
             }
             stmt.setInt(1, id);
@@ -120,6 +128,12 @@ public class GerenteDAO {
             try (ResultSet rs = stmt.executeQuery()) {
                 if (rs.next()) {
                     FuncionarioModel funcionario = funcionarioDAO.buscaPorId(id);
+
+                    if(funcionario == null){
+                        LoggerUtil.logWarning("FUNCIONARIO BASE NÃO ENCONTRADO PARA GERENTE COM ID: " + id);
+                        return null;
+                    }
+
                     int equipe = rs.getInt("equipe");
 
                     gerente = new GerenteModel(funcionario.getNome(),
@@ -134,8 +148,7 @@ public class GerenteDAO {
 
 
         } catch (SQLException e) {
-            e.printStackTrace();
-            System.err.println("Erro ao realizar busca por ID: " + e.getMessage());
+            LoggerUtil.logErro("BUSCAR POR ID", e);
         }
         return gerente;
     }
@@ -152,6 +165,10 @@ public class GerenteDAO {
                 int id = rs.getInt("id");
                 FuncionarioModel funcionario = funcionarioDAO.buscaPorId(id);
 
+                if(funcionario == null){
+                    LoggerUtil.logWarning("FUNCIONARIO BASE NÃO ENCONTRADO PARA GERENTE COM ID: " + id);
+                }
+
                 if(funcionario != null){
                     GerenteModel gerente = new GerenteModel(funcionario.getNome(),
                                                             funcionario.getCpf(),
@@ -165,8 +182,7 @@ public class GerenteDAO {
             }
 
         } catch (SQLException e) {
-            e.printStackTrace();
-            System.err.println("Erro ao listar dados: " + e.getMessage());
+            LoggerUtil.logErro("LISTAR TODOS", e);
         }
         return gerentes;
     }

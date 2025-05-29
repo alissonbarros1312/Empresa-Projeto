@@ -1,5 +1,7 @@
 package org.example.model;
 
+import org.example.util.ValidacoesUtil;
+
 import java.io.*;
 import java.util.ArrayList;
 import java.util.List;
@@ -9,13 +11,13 @@ public class EmpresaModel {
     private List<GerenteModel> gerentes = new ArrayList<>();
 
     public void adicionaFuncionario(FuncionarioModel pessoa) {
-        if (ValidacoesModel.validaPessoa(pessoa)) {
+        if (ValidacoesUtil.validaPessoa(pessoa)) {
             funcionarios.add(pessoa);
         }
     }
 
     public void adicionaGerente(GerenteModel pessoa) {
-        if (ValidacoesModel.validaPessoa(pessoa)) {
+        if (ValidacoesUtil.validaPessoa(pessoa)) {
             gerentes.add(pessoa);
         }
     }

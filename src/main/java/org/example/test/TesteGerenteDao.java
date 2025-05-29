@@ -4,13 +4,15 @@ import org.example.dao.ConnectionFactory;
 import org.example.dao.GerenteDAO;
 import org.example.model.GerenteModel;
 
+import java.sql.Connection;
 import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.List;
 
 public class TesteGerenteDao {
     public void testeGerente() {
-        GerenteDAO gerenteDAO = new GerenteDAO(ConnectionFactory.getConnection());
+        Connection conn = ConnectionFactory.getConnection();
+        GerenteDAO gerenteDAO = new GerenteDAO(conn);
 
         // teste inserir
         GerenteModel gerente = new GerenteModel("TesteGerente", "09876543211", "TI", 3000, 4);
@@ -34,6 +36,7 @@ public class TesteGerenteDao {
             System.out.println("Gerente encontrado");
             System.out.println("Nome: " + gerenteID.getNome());
             System.out.println("ID: " + gerenteID.getId());
+            System.out.println("-----------------");
         } else {
             System.out.println("ID não encontrado");
         }

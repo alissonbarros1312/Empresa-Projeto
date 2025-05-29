@@ -1,5 +1,7 @@
 package org.example.model;
 
+import org.example.util.ValidacoesUtil;
+
 public abstract class PessoaModel {
     private String nome;
     private String cpf;
@@ -24,7 +26,7 @@ public abstract class PessoaModel {
     }
 
     public void setNome(String nome) {
-        if (ValidacoesModel.validaString(nome)) {
+        if (ValidacoesUtil.validaString(nome)) {
             this.nome = nome;
         }
     }
@@ -34,7 +36,7 @@ public abstract class PessoaModel {
     }
 
     public void setCpf(String cpf) {
-        if (ValidacoesModel.validaCpf(cpf)) {
+        if (ValidacoesUtil.validaCpf(cpf)) {
             this.cpf = cpf;
         }
     }

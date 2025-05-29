@@ -1,6 +1,7 @@
 package org.example.controller;
 
 import org.example.model.*;
+import org.example.util.ValidacoesUtil;
 
 import java.util.Scanner;
 
@@ -74,7 +75,7 @@ public class EmpresaController {
             System.out.print(mensagem);
             entrada = sc.nextLine();
 
-            if (ValidacoesModel.validaString(entrada)) {
+            if (ValidacoesUtil.validaString(entrada)) {
                 return entrada;
             } else {
                 System.out.println("Entrada invalida. Tente novamente");
@@ -92,7 +93,7 @@ public class EmpresaController {
                 salario = sc.nextDouble();
                 sc.nextLine();
 
-                if (ValidacoesModel.validaSalario(salario)) {
+                if (ValidacoesUtil.validaSalario(salario)) {
                     return salario;
                 } else {
                     System.out.println("Salario precisa ser positivo.");
@@ -114,7 +115,7 @@ public class EmpresaController {
             if (sc.hasNextInt()) {
                 equipe = sc.nextInt();
                 sc.nextLine();
-                if (ValidacoesModel.validaEquipe(equipe)) {
+                if (ValidacoesUtil.validaEquipe(equipe)) {
                     return equipe;
                 } else {
                     System.out.println("Equipe precisa ser maior que 0");

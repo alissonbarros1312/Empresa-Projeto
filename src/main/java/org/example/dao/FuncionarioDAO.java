@@ -1,7 +1,8 @@
 package org.example.dao;
 
 import org.example.model.FuncionarioModel;
-import org.example.model.ValidacoesModel;
+import org.example.util.LoggerUtil;
+import org.example.util.ValidacoesUtil;
 
 import java.sql.*;
 import java.util.ArrayList;
@@ -25,6 +26,7 @@ public class FuncionarioDAO {
             int linhasAfetadas = stmt.executeUpdate();
 
             if(linhasAfetadas == 0){
+                LoggerUtil.logWarning("FALHA AO INSERIR FUNCIONARIO");
                 throw new SQLException("Falha ao inserir funcionario");
             }
 
@@ -32,20 +34,21 @@ public class FuncionarioDAO {
                 if(generatedKeys.next()){
                     return generatedKeys.getInt(1);
                 } else {
+                    LoggerUtil.logWarning("FALHA AO OBTER ID DO FUNCIONARIO INSERIDO");
                     throw new SQLException("Falha ao obter ID do funcionario inserido");
                 }
             }
 
         } catch (SQLException e) {
-            e.printStackTrace();
+            LoggerUtil.logErro("INSERIR FUNCIONARIO", e);
             return -1;
         }
     }
 
-    public void atualizar(FuncionarioModel funcionario) {
-        if (!ValidacoesModel.validaPessoa(funcionario) || !ValidacoesModel.validaID(funcionario.getId())) {
-            System.out.println("Erro...");
-            return;
+    public boolean atualizar(FuncionarioModel funcionario) {
+        if (!ValidacoesUtil.validaPessoa(funcionario) || !ValidacoesUtil.validaID(funcionario.getId())) {
+            LoggerUtil.logWarning("FUNCIONARIO NÃO VALIDO");
+            return false;
         }
 
         String sql = "UPDATE funcionarios SET nome = ?, cpf = ?, setor = ?, salario = ? WHERE id = ?";
@@ -62,17 +65,24 @@ public class FuncionarioDAO {
             int linhasAfetadas = stmt.executeUpdate();
 
             if (linhasAfetadas == 0) {
+                LoggerUtil.logWarning("NENHUMA LINHA ATUALIZADA, ID PODE NÃO EXISTIR");
                 throw new SQLException("Nenhuma linha atualizada, ID pode não existir");
             }
 
         } catch (SQLException e) {
-            e.printStackTrace();
+            LoggerUtil.logErro("ATUALIZAR FUNCIONARIO", e);
+            return false;
         }
-
+        return true;
 
     }
 
     public void remover(int id) {
+        if(!ValidacoesUtil.validaID(id)){
+            LoggerUtil.logWarning("ID NÃO VALIDO");
+            return;
+        }
+
         String sql = "DELETE FROM funcionarios WHERE id = ?";
 
         try (Connection conn = ConnectionFactory.getConnection();
@@ -83,17 +93,21 @@ public class FuncionarioDAO {
             int linhasAfetadas = stmt.executeUpdate();
 
             if (linhasAfetadas > 0) {
-                System.out.println("Funcionario removido com sucesso");
+                LoggerUtil.logInfo("Funcionario removido com sucesso");
             } else {
-                System.out.println("Nenhum funcionario encontrado com o ID informado");
+                LoggerUtil.logWarning("Nenhum funcionario encontrado com o ID informado");
             }
 
         } catch (SQLException e) {
-            e.printStackTrace();
+            LoggerUtil.logErro("REMOVER FUNCIONARIO", e);
         }
     }
 
     public FuncionarioModel buscaPorId(int id) {
+        if(!ValidacoesUtil.validaID(id)){
+            LoggerUtil.logWarning("ID NÃO VALIDO");
+            return null;
+        }
         String sql = "SELECT * FROM funcionarios WHERE id = ?";
 
         FuncionarioModel funcionario = null;
@@ -116,7 +130,7 @@ public class FuncionarioDAO {
             }
 
         } catch (SQLException e) {
-            e.printStackTrace();
+            LoggerUtil.logErro("BUSCAR POR ID", e);
         }
 
         return funcionario;
@@ -144,7 +158,7 @@ public class FuncionarioDAO {
             }
 
         } catch (SQLException e){
-            e.printStackTrace();
+            LoggerUtil.logErro("LISTAR TODOS", e);
         }
         return funcionarios;
     }

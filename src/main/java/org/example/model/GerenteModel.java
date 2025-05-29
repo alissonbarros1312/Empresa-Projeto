@@ -1,5 +1,7 @@
 package org.example.model;
 
+import org.example.util.ValidacoesUtil;
+
 public class GerenteModel extends FuncionarioModel{
     private int equipe;
 
@@ -13,7 +15,7 @@ public class GerenteModel extends FuncionarioModel{
     }
 
     public void setEquipe(int equipe) {
-        if(ValidacoesModel.validaEquipe(equipe)){
+        if(ValidacoesUtil.validaEquipe(equipe)){
             this.equipe = equipe;
         }
     }

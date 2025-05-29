@@ -1,6 +1,8 @@
-package org.example.model;
+package org.example.util;
 
-public class ValidacoesModel {
+import org.example.model.PessoaModel;
+
+public class ValidacoesUtil {
     public static boolean validaString(String text) {
         if (text == null || text.trim().isEmpty()) {
             System.out.println("Dado invalido");
