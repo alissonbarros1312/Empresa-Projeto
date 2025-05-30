@@ -46,15 +46,9 @@ public class FuncionarioDAO {
     }
 
     public boolean atualizar(FuncionarioModel funcionario) {
-        if (!ValidacoesUtil.validaPessoa(funcionario) || !ValidacoesUtil.validaID(funcionario.getId())) {
-            LoggerUtil.logWarning("FUNCIONARIO NÃO VALIDO");
-            return false;
-        }
-
         String sql = "UPDATE funcionarios SET nome = ?, cpf = ?, setor = ?, salario = ? WHERE id = ?";
 
-        try (Connection conn = ConnectionFactory.getConnection();
-             PreparedStatement stmt = conn.prepareStatement(sql)) {
+        try (PreparedStatement stmt = connection.prepareStatement(sql)) {
 
             stmt.setString(1, funcionario.getNome());
             stmt.setString(2, funcionario.getCpf());
@@ -64,7 +58,9 @@ public class FuncionarioDAO {
 
             int linhasAfetadas = stmt.executeUpdate();
 
-            if (linhasAfetadas == 0) {
+            if (linhasAfetadas > 0) {
+                LoggerUtil.logInfo("ATUALIZAÇÃO REALIZADA COM SUCESSO. ID: " + funcionario.getId());
+            } else {
                 LoggerUtil.logWarning("NENHUMA LINHA ATUALIZADA, ID PODE NÃO EXISTIR");
                 throw new SQLException("Nenhuma linha atualizada, ID pode não existir");
             }
@@ -77,29 +73,26 @@ public class FuncionarioDAO {
 
     }
 
-    public void remover(int id) {
-        if(!ValidacoesUtil.validaID(id)){
-            LoggerUtil.logWarning("ID NÃO VALIDO");
-            return;
-        }
-
+    public boolean remover(int id) {
         String sql = "DELETE FROM funcionarios WHERE id = ?";
 
-        try (Connection conn = ConnectionFactory.getConnection();
-             PreparedStatement stmt = conn.prepareStatement(sql)) {
+        try (PreparedStatement stmt = connection.prepareStatement(sql)) {
 
             stmt.setInt(1, id);
 
             int linhasAfetadas = stmt.executeUpdate();
 
             if (linhasAfetadas > 0) {
-                LoggerUtil.logInfo("Funcionario removido com sucesso");
+                LoggerUtil.logInfo("Funcionario removido com sucesso. ID: " + id);
+                return true;
             } else {
-                LoggerUtil.logWarning("Nenhum funcionario encontrado com o ID informado");
+                LoggerUtil.logWarning("Nenhum funcionario encontrado com o ID informado. ID: " + id);
+                return false;
             }
 
         } catch (SQLException e) {
             LoggerUtil.logErro("REMOVER FUNCIONARIO", e);
+            return false;
         }
     }
 
@@ -112,22 +105,22 @@ public class FuncionarioDAO {
 
         FuncionarioModel funcionario = null;
 
-        try (Connection conn = ConnectionFactory.getConnection();
-             PreparedStatement stmt = conn.prepareStatement(sql)) {
+        try (PreparedStatement stmt = connection.prepareStatement(sql)) {
 
             stmt.setInt(1, id);
 
-            ResultSet rs = stmt.executeQuery();
+            try(ResultSet rs = stmt.executeQuery()){
+                if (rs.next()) {
+                    String nome = rs.getString("nome");
+                    String cpf = rs.getString("cpf");
+                    String setor = rs.getString("setor");
+                    double salario = rs.getDouble("salario");
 
-            if (rs.next()) {
-                String nome = rs.getString("nome");
-                String cpf = rs.getString("cpf");
-                String setor = rs.getString("setor");
-                double salario = rs.getDouble("salario");
-
-                funcionario = new FuncionarioModel(nome, cpf, setor, salario);
-                funcionario.setId(rs.getInt("id"));
+                    funcionario = new FuncionarioModel(nome, cpf, setor, salario);
+                    funcionario.setId(rs.getInt("id"));
+                }
             }
+
 
         } catch (SQLException e) {
             LoggerUtil.logErro("BUSCAR POR ID", e);
@@ -141,20 +134,20 @@ public class FuncionarioDAO {
         List<FuncionarioModel> funcionarios = new ArrayList<>();
         String sql = "SELECT * FROM funcionarios";
 
-        try (Connection conn = ConnectionFactory.getConnection();
-             PreparedStatement stmt = conn.prepareStatement(sql);
-             ResultSet rs = stmt.executeQuery()) {
+        try (PreparedStatement stmt = connection.prepareStatement(sql)) {
 
-            while (rs.next()){
-                String nome = rs.getString("nome");
-                String cpf = rs.getString("cpf");
-                String setor = rs.getString("setor");
-                double salario = rs.getDouble("salario");
+            try(ResultSet rs = stmt.executeQuery()){
+                while (rs.next()){
+                    String nome = rs.getString("nome");
+                    String cpf = rs.getString("cpf");
+                    String setor = rs.getString("setor");
+                    double salario = rs.getDouble("salario");
 
-                FuncionarioModel funcionario = new FuncionarioModel(nome, cpf, setor, salario);
-                funcionario.setId(rs.getInt("id"));
+                    FuncionarioModel funcionario = new FuncionarioModel(nome, cpf, setor, salario);
+                    funcionario.setId(rs.getInt("id"));
 
-                funcionarios.add(funcionario);
+                    funcionarios.add(funcionario);
+                }
             }
 
         } catch (SQLException e){
