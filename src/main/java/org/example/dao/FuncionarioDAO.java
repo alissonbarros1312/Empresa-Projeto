@@ -15,10 +15,10 @@ public class FuncionarioDAO {
         this.connection = connection;
     }
 
-    public int inserir(FuncionarioModel funcionario) {
+    public int inserir(FuncionarioModel funcionario, Connection conn) {
         String sql = "INSERT INTO funcionarios (nome, cpf, setor, salario) VALUES (?, ?, ?, ?)";
 
-        try (PreparedStatement stmt = connection.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS)) {
+        try (PreparedStatement stmt = conn.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS)) {
             stmt.setString(1, funcionario.getNome());
             stmt.setString(2, funcionario.getCpf());
             stmt.setString(3, funcionario.getSetor());
@@ -45,10 +45,10 @@ public class FuncionarioDAO {
         }
     }
 
-    public boolean atualizar(FuncionarioModel funcionario) {
+    public boolean atualizar(FuncionarioModel funcionario, Connection conn) {
         String sql = "UPDATE funcionarios SET nome = ?, cpf = ?, setor = ?, salario = ? WHERE id = ?";
 
-        try (PreparedStatement stmt = connection.prepareStatement(sql)) {
+        try (PreparedStatement stmt = conn.prepareStatement(sql)) {
 
             stmt.setString(1, funcionario.getNome());
             stmt.setString(2, funcionario.getCpf());
@@ -73,10 +73,10 @@ public class FuncionarioDAO {
 
     }
 
-    public boolean remover(int id) {
+    public boolean remover(int id, Connection conn) {
         String sql = "DELETE FROM funcionarios WHERE id = ?";
 
-        try (PreparedStatement stmt = connection.prepareStatement(sql)) {
+        try (PreparedStatement stmt = conn.prepareStatement(sql)) {
 
             stmt.setInt(1, id);
 

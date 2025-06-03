@@ -18,12 +18,12 @@ public class GerenteDAO {
         this.funcionarioDAO = new FuncionarioDAO(connection);
     }
 
-    public int inserir(GerenteModel gerente) {
-        int funcionarioId = funcionarioDAO.inserir(gerente);
+    public int inserir(GerenteModel gerente, Connection conn) {
+        int funcionarioId = funcionarioDAO.inserir(gerente, conn);
 
         String sql = "INSERT INTO gerentes (id, equipe) VALUES (?, ?)";
 
-        try (PreparedStatement stmt = connection.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS)) {
+        try (PreparedStatement stmt = conn.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS)) {
 
             stmt.setInt(1, funcionarioId);
             stmt.setInt(2, gerente.getEquipe());
@@ -51,8 +51,8 @@ public class GerenteDAO {
         }
     }
 
-    public boolean atualizar(GerenteModel gerente) {
-        if (!funcionarioDAO.atualizar(gerente)) {
+    public boolean atualizar(GerenteModel gerente, Connection conn) {
+        if (!funcionarioDAO.atualizar(gerente, conn)) {
             LoggerUtil.logWarning("ATUALIZAÇÃO DE DADOS BASE NÃO REALIZADA");
             return false;
         }
@@ -79,15 +79,15 @@ public class GerenteDAO {
         }
     }
 
-    public boolean remover(int id) {
+    public boolean remover(int id, Connection conn) {
         String sql = "DELETE FROM gerentes WHERE id = ?";
 
-        try (PreparedStatement stmt = connection.prepareStatement(sql)) {
+        try (PreparedStatement stmt = conn.prepareStatement(sql)) {
             stmt.setInt(1, id);
 
             int linhasAfetadas = stmt.executeUpdate();
 
-            if (linhasAfetadas > 0 && funcionarioDAO.remover(id)) {
+            if (linhasAfetadas > 0 && funcionarioDAO.remover(id, conn)) {
                 LoggerUtil.logInfo("Gerente removido com sucesso");
                 return true;
             } else {

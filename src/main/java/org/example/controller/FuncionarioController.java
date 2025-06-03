@@ -3,6 +3,7 @@ package org.example.controller;
 import org.example.model.FuncionarioModel;
 import org.example.service.FuncionarioService;
 
+import java.sql.Connection;
 import java.util.List;
 
 public class FuncionarioController {
