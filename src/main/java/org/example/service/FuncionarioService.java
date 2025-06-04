@@ -17,7 +17,7 @@ public class FuncionarioService {
         this.funcionarioDAO = funcionarioDAO;
     }
 
-    public int inserir(FuncionarioModel funcionario, Connection conn) {
+    protected int inserir(FuncionarioModel funcionario, Connection conn) {
         if (!ValidacoesUtil.validaPessoa(funcionario) || !ValidacoesUtil.validaID(funcionario.getId())) {
             LoggerUtil.logWarning("FUNCIONARIO NÃO VALIDO");
             return -1;
@@ -98,7 +98,7 @@ public class FuncionarioService {
         }
     }
 
-    public boolean atualizar(FuncionarioModel funcionario, Connection conn){
+    protected boolean atualizar(FuncionarioModel funcionario, Connection conn){
         if (!ValidacoesUtil.validaPessoa(funcionario) || !ValidacoesUtil.validaID(funcionario.getId())) {
             LoggerUtil.logWarning("FUNCIONARIO NÃO VALIDO. ID: " + funcionario.getId());
             return false;
@@ -114,7 +114,7 @@ public class FuncionarioService {
         return sucesso;
     }
 
-    public boolean remover(int id, Connection conn) {
+    protected boolean remover(int id, Connection conn) {
         if (!ValidacoesUtil.validaID(id)) {
             LoggerUtil.logWarning("ID NÃO VALIDO. ID: " + id);
             return false;

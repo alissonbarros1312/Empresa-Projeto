@@ -160,29 +160,30 @@ public class GerenteService {
     }
 
     public GerenteModel buscarPorId(int id) {
-        try {
-            if (!ValidacoesUtil.validaID(id)) {
-                LoggerUtil.logWarning("[GERENTE SERVICE] ID NÃO VALIDO");
-                return null;
-            }
+        if (!ValidacoesUtil.validaID(id)) {
+            LoggerUtil.logWarning("[GERENTE SERVICE] ID NÃO VALIDO");
+            return null;
+        }
+        GerenteModel gerente = null;
 
-            GerenteModel gerente = gerenteDAO.buscaPorId(id);
+        try (Connection conn = ConnectionFactory.getConnection()){
+            gerente = gerenteDAO.buscarPorId(id, conn);
 
             if (gerente != null) {
                 LoggerUtil.logInfo("GERENTE ENCONTRADO. ID: " + id);
             } else {
                 LoggerUtil.logWarning("[GERENTE SERVICE] GERENTE NÃO ENCONTRADO. ID: " + id);
             }
-            return gerente;
+
         } catch (Exception e) {
             LoggerUtil.logErro("[GERENTE SERVICE] ERRO INESPERADO AO BUSCAR POR ID - GERENTE", e);
-            return null;
         }
+        return gerente;
     }
 
     public List<GerenteModel> listarTodos() {
-        try {
-            List<GerenteModel> gerentes = gerenteDAO.listarTodos();
+        try (Connection conn = ConnectionFactory.getConnection()){
+            List<GerenteModel> gerentes = gerenteDAO.listarTodos(conn);
 
             LoggerUtil.logInfo("LISTAGEM FINALIZADA. TOTAL DE GERENTES ENCONTRADOS: " + gerentes.size());
             return gerentes;
@@ -192,7 +193,7 @@ public class GerenteService {
         }
     }
 
-    private void rollbackSilencioso(Connection conn){
+    private void rollbackSilencioso(Connection conn) {
         if (conn != null) {
             try {
                 conn.rollback();

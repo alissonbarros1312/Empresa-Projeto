@@ -1,9 +1,7 @@
 package org.example.dao;
 
-import org.example.model.FuncionarioModel;
 import org.example.model.GerenteModel;
 import org.example.util.LoggerUtil;
-import org.example.util.ValidacoesUtil;
 
 import java.sql.*;
 import java.util.ArrayList;
@@ -19,30 +17,21 @@ public class GerenteDAO {
     }
 
     public int inserir(GerenteModel gerente, Connection conn) {
-        int funcionarioId = funcionarioDAO.inserir(gerente, conn);
-
         String sql = "INSERT INTO gerentes (id, equipe) VALUES (?, ?)";
 
-        try (PreparedStatement stmt = conn.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS)) {
+        try (PreparedStatement stmt = conn.prepareStatement(sql)) {
 
-            stmt.setInt(1, funcionarioId);
+            stmt.setInt(1, gerente.getId());
             stmt.setInt(2, gerente.getEquipe());
 
             int linhasAfetadas = stmt.executeUpdate();
 
             if (linhasAfetadas > 0) {
-                gerente.setId(funcionarioId);
-                LoggerUtil.logInfo("Gerente inserido com sucesso");
+                LoggerUtil.logInfo("Gerente inserido com sucesso. ID: " + gerente.getId());
+                return gerente.getId();
             } else {
-                LoggerUtil.logWarning("Falha ao inserir gerente com id: " + funcionarioId);
-            }
-            try (ResultSet generatedKeys = stmt.getGeneratedKeys()) {
-                if (generatedKeys.next()) {
-                    return generatedKeys.getInt(1);
-                } else {
-                    LoggerUtil.logWarning("FALHA AO OBTER ID DO GERENTE INSERIDO");
-                    throw new SQLException("Falha ao obter ID do gerente inserido");
-                }
+                LoggerUtil.logWarning("Falha ao inserir gerente com id: " + gerente.getId());
+                return -1;
             }
 
         } catch (SQLException e) {
@@ -52,14 +41,9 @@ public class GerenteDAO {
     }
 
     public boolean atualizar(GerenteModel gerente, Connection conn) {
-        if (!funcionarioDAO.atualizar(gerente, conn)) {
-            LoggerUtil.logWarning("ATUALIZAÇÃO DE DADOS BASE NÃO REALIZADA");
-            return false;
-        }
-
         String sql = "UPDATE gerentes SET equipe = ? WHERE id = ?";
 
-        try (PreparedStatement stmt = connection.prepareStatement(sql)) {
+        try (PreparedStatement stmt = conn.prepareStatement(sql)) {
 
             stmt.setInt(1, gerente.getEquipe());
             stmt.setInt(2, gerente.getId());
@@ -68,13 +52,13 @@ public class GerenteDAO {
 
             if (linhasAfetadas == 0) {
                 LoggerUtil.logWarning("NENHUMA ATUALIZAÇÃO REALIZADA PARA O GERENTE COM ID: " + gerente.getId());
-                throw new SQLException("Nenhuma atualização realizada");
+                return false;
             } else {
                 LoggerUtil.logInfo("Gerente atualizado com sucesso");
                 return true;
             }
         } catch (SQLException e) {
-            LoggerUtil.logErro("ATUALIZAR GERENTE", e);
+            LoggerUtil.logErro("[GERENTE DAO] FALHA AO ATUALIZAR GERENTE", e);
             return false;
         }
     }
@@ -87,7 +71,7 @@ public class GerenteDAO {
 
             int linhasAfetadas = stmt.executeUpdate();
 
-            if (linhasAfetadas > 0 && funcionarioDAO.remover(id, conn)) {
+            if (linhasAfetadas > 0) {
                 LoggerUtil.logInfo("Gerente removido com sucesso");
                 return true;
             } else {
@@ -101,30 +85,26 @@ public class GerenteDAO {
         }
     }
 
-    public GerenteModel buscaPorId(int id) {
-        String sql = "SELECT * FROM gerentes WHERE id = ?";
+    public GerenteModel buscarPorId(int id, Connection conn) {
+        String sql = "SELECT g.id, g.equipe, f.nome, f.cpf, f.setor, f.salario " +
+                     "FROM gerentes g " +
+                     "JOIN funcionarios f ON g.id = f.id " +
+                     "WHERE g.id = ?";
+
         GerenteModel gerente = null;
 
-        try (PreparedStatement stmt = connection.prepareStatement(sql)) {
+        try (PreparedStatement stmt = conn.prepareStatement(sql)) {
             stmt.setInt(1, id);
 
             try (ResultSet rs = stmt.executeQuery()) {
                 if (rs.next()) {
-                    FuncionarioModel funcionario = funcionarioDAO.buscaPorId(id);
-
-                    if (funcionario == null) {
-                        LoggerUtil.logWarning("FUNCIONARIO BASE NÃO ENCONTRADO PARA GERENTE COM ID: " + id);
-                        return null;
-                    }
-
-                    int equipe = rs.getInt("equipe");
-
-                    gerente = new GerenteModel(funcionario.getNome(),
-                            funcionario.getCpf(),
-                            funcionario.getSetor(),
-                            funcionario.getSalario(),
-                            equipe);
+                    gerente = new GerenteModel(rs.getString("nome"),
+                                               rs.getString("cpf"),
+                                               rs.getString("setor"),
+                                               rs.getDouble("salario"),
+                                               rs.getInt("equipe"));
                     gerente.setId(rs.getInt("id"));
+                    LoggerUtil.logInfo("GERENTE ENCONTRADO. ID: " + gerente.getId());
                 }
 
             }
@@ -136,32 +116,23 @@ public class GerenteDAO {
         return gerente;
     }
 
-    public List<GerenteModel> listarTodos() {
+    public List<GerenteModel> listarTodos(Connection conn) {
         List<GerenteModel> gerentes = new ArrayList<>();
-        String sql = "SELECT * FROM gerentes";
+        String sql = "SELECT g.id, g.equipe, f.nome, f.cpf, f.setor, f.salario " +
+                     "FROM gerentes g " +
+                     "JOIN funcionarios f ON g.id = f.id";
 
-        try (PreparedStatement stmt = connection.prepareStatement(sql);
+        try (PreparedStatement stmt = conn.prepareStatement(sql);
              ResultSet rs = stmt.executeQuery()) {
 
             while (rs.next()) {
-                int equipe = rs.getInt("equipe");
-                int id = rs.getInt("id");
-                FuncionarioModel funcionario = funcionarioDAO.buscaPorId(id);
-
-                if (funcionario == null) {
-                    LoggerUtil.logWarning("FUNCIONARIO BASE NÃO ENCONTRADO PARA GERENTE COM ID: " + id);
-                }
-
-                if (funcionario != null) {
-                    GerenteModel gerente = new GerenteModel(funcionario.getNome(),
-                            funcionario.getCpf(),
-                            funcionario.getSetor(),
-                            funcionario.getSalario(),
-                            equipe);
+                    GerenteModel gerente = new GerenteModel(rs.getString("nome"),
+                            rs.getString("cpf"),
+                            rs.getString("setor"),
+                            rs.getDouble("salario"),
+                            rs.getInt("equipe"));
                     gerente.setId(rs.getInt("id"));
                     gerentes.add(gerente);
-
-                }
             }
 
         } catch (SQLException e) {

@@ -16,22 +16,22 @@ public class TesteGerenteDao {
 
         // teste inserir
         GerenteModel gerente = new GerenteModel("TesteGerente", "09876543211", "TI", 3000, 4);
-        gerenteDAO.inserir(gerente);
+        //gerenteDAO.inserir(gerente);
         System.out.println("Inserido com sucesso");
         System.out.println();
 
 
         // teste listarTodos
-        List<GerenteModel> gerentesLista = gerenteDAO.listarTodos();
+        List<GerenteModel> gerentesLista = gerenteDAO.listarTodos(conn);
         System.out.println("---- Listar Todos ----");
-        for (GerenteModel g : gerenteDAO.listarTodos()) {
+        for (GerenteModel g : gerenteDAO.listarTodos(conn)) {
             System.out.println("Nome: " + g.getNome() + " ID: " + g.getId());
             System.out.println();
         }
 
         // teste busca por ID
         int id = 1;
-        GerenteModel gerenteID = gerenteDAO.buscaPorId(id);
+        GerenteModel gerenteID = gerenteDAO.buscarPorId(id, conn);
         if (gerenteID != null) {
             System.out.println("Gerente encontrado");
             System.out.println("Nome: " + gerenteID.getNome());
@@ -46,7 +46,7 @@ public class TesteGerenteDao {
         // teste atualizar
         if (gerenteID != null) {
             gerente.setEquipe(8);
-            gerenteDAO.atualizar(gerente);
+            //gerenteDAO.atualizar(gerente);
             System.out.println("Atualizado com sucesso");
         } else {
             System.out.println("Não foi possivel atualizar");
@@ -57,7 +57,7 @@ public class TesteGerenteDao {
         // teste remover
         if (gerenteID != null) {
             int idRemove = gerenteID.getId();
-            gerenteDAO.remover(idRemove);
+            //gerenteDAO.remover(idRemove);
             System.out.println("ID: " + idRemove + " removido com sucesso");
         } else {
             System.out.println("Gerente inválido");

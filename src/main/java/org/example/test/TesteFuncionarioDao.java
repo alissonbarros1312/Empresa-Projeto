@@ -14,7 +14,7 @@ public class TesteFuncionarioDao {
 
         // teste inserir
         FuncionarioModel novoFuncionario = new FuncionarioModel("TesteNome", "12345678910", "Secretaria", 2500);
-        funcionarioDao.inserir(novoFuncionario);
+        //funcionarioDao.inserir(novoFuncionario);
         System.out.println("Inserido com sucesso");
         System.out.println();
 
@@ -40,7 +40,7 @@ public class TesteFuncionarioDao {
         // teste atualizar
         if (funcionarioId != null) {
             funcionarioId.setSalario(5000);
-            funcionarioDao.atualizar(funcionarioId);
+            //funcionarioDao.atualizar(funcionarioId);
             System.out.println("Salario atualizado");
             System.out.println();
         } else {
@@ -50,7 +50,7 @@ public class TesteFuncionarioDao {
         // teste remover
         if (funcionarioId != null) {
             int idRemove = funcionarioId.getId();
-            funcionarioDao.remover(idRemove);
+            //funcionarioDao.remover(idRemove);
             System.out.println("ID: " + idRemove + " removido com sucesso");
             System.out.println();
         } else {

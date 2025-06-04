@@ -12,7 +12,7 @@ public class GerenteController {
         this.gerenteService = gerenteService;
     }
 
-    public int criarGerente(GerenteModel gerente){
+    public int inserirGerente(GerenteModel gerente){
         return gerenteService.inserir(gerente);
     }
 
@@ -24,7 +24,7 @@ public class GerenteController {
         return gerenteService.remover(id);
     }
 
-    public GerenteModel buscaGerentePorId(int id){
+    public GerenteModel buscarGerentePorId(int id){
         return gerenteService.buscarPorId(id);
     }
 
