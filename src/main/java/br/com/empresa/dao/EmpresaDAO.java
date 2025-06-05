@@ -1,4 +1,4 @@
-package org.example.dao;
+package br.com.empresa.dao;
 
 public class EmpresaDAO {
 }

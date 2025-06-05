@@ -1,6 +1,6 @@
-package org.example.model;
+package br.com.empresa.model;
 
-import org.example.util.ValidacoesUtil;
+import br.com.empresa.util.ValidacoesUtil;
 
 import java.io.*;
 import java.util.ArrayList;

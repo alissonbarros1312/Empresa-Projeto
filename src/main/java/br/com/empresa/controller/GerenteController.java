@@ -1,7 +1,7 @@
-package org.example.controller;
+package br.com.empresa.controller;
 
-import org.example.model.GerenteModel;
-import org.example.service.GerenteService;
+import br.com.empresa.model.GerenteModel;
+import br.com.empresa.service.GerenteService;
 
 import java.util.List;
 

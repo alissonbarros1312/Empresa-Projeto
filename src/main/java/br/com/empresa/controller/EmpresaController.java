@@ -1,7 +1,10 @@
-package org.example.controller;
+package br.com.empresa.controller;
 
+import br.com.empresa.model.EmpresaModel;
+import br.com.empresa.model.FuncionarioModel;
+import br.com.empresa.model.GerenteModel;
 import org.example.model.*;
-import org.example.util.ValidacoesUtil;
+import br.com.empresa.util.ValidacoesUtil;
 
 import java.util.Scanner;
 

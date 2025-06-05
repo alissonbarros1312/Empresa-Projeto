@@ -1,8 +1,8 @@
-package org.example.dao;
+package br.com.empresa.dao;
 
-import org.example.model.FuncionarioModel;
-import org.example.util.LoggerUtil;
-import org.example.util.ValidacoesUtil;
+import br.com.empresa.model.FuncionarioModel;
+import br.com.empresa.util.LoggerUtil;
+import br.com.empresa.util.ValidacoesUtil;
 
 import java.sql.*;
 import java.util.ArrayList;

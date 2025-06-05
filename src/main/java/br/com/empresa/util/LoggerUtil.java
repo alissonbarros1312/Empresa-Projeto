@@ -1,4 +1,4 @@
-package org.example.util;
+package br.com.empresa.util;
 
 public class LoggerUtil {
     public static void logErro(String contexto, Exception e){

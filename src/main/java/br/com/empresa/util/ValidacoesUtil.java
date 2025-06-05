@@ -1,6 +1,6 @@
-package org.example.util;
+package br.com.empresa.util;
 
-import org.example.model.PessoaModel;
+import br.com.empresa.model.PessoaModel;
 
 public class ValidacoesUtil {
     public static boolean validaString(String text) {

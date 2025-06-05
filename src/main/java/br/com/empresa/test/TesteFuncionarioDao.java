@@ -1,8 +1,8 @@
-package org.example.test;
+package br.com.empresa.test;
 
-import org.example.dao.ConnectionFactory;
-import org.example.dao.FuncionarioDAO;
-import org.example.model.FuncionarioModel;
+import br.com.empresa.dao.ConnectionFactory;
+import br.com.empresa.dao.FuncionarioDAO;
+import br.com.empresa.model.FuncionarioModel;
 
 
 import java.sql.SQLException;

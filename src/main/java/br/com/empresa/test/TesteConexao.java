@@ -1,6 +1,6 @@
-package org.example.test;
+package br.com.empresa.test;
 
-import org.example.dao.ConnectionFactory;
+import br.com.empresa.dao.ConnectionFactory;
 
 import java.sql.Connection;
 

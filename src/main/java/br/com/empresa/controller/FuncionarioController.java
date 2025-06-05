@@ -1,9 +1,8 @@
-package org.example.controller;
+package br.com.empresa.controller;
 
-import org.example.model.FuncionarioModel;
-import org.example.service.FuncionarioService;
+import br.com.empresa.model.FuncionarioModel;
+import br.com.empresa.service.FuncionarioService;
 
-import java.sql.Connection;
 import java.util.List;
 
 public class FuncionarioController {

@@ -1,6 +1,6 @@
-package org.example.view;
+package br.com.empresa.view;
 
-import org.example.controller.EmpresaController;
+import br.com.empresa.controller.EmpresaController;
 
 import java.util.Scanner;
 

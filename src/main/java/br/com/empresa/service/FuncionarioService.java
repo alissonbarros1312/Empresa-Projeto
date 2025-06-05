@@ -1,10 +1,10 @@
-package org.example.service;
+package br.com.empresa.service;
 
-import org.example.dao.ConnectionFactory;
-import org.example.dao.FuncionarioDAO;
-import org.example.model.FuncionarioModel;
-import org.example.util.LoggerUtil;
-import org.example.util.ValidacoesUtil;
+import br.com.empresa.dao.ConnectionFactory;
+import br.com.empresa.dao.FuncionarioDAO;
+import br.com.empresa.model.FuncionarioModel;
+import br.com.empresa.util.LoggerUtil;
+import br.com.empresa.util.ValidacoesUtil;
 
 import java.sql.Connection;
 import java.sql.SQLException;

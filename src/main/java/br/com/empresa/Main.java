@@ -1,9 +1,7 @@
-package org.example;
+package br.com.empresa;
 
-import org.example.test.TesteConexao;
-import org.example.test.TesteFuncionarioDao;
-import org.example.test.TesteGerenteDao;
-import org.example.view.EmpresaView;
+import br.com.empresa.test.TesteGerenteDao;
+import br.com.empresa.view.EmpresaView;
 
 //TIP To <b>Run</b> code, press <shortcut actionId="Run"/> or
 // click the <icon src="AllIcons.Actions.Execute"/> icon in the gutter.

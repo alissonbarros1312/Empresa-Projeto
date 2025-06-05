@@ -1,6 +1,6 @@
-package org.example.model;
+package br.com.empresa.model;
 
-import org.example.util.ValidacoesUtil;
+import br.com.empresa.util.ValidacoesUtil;
 
 public abstract class PessoaModel {
     private String nome;

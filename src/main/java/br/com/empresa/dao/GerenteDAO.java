@@ -1,7 +1,7 @@
-package org.example.dao;
+package br.com.empresa.dao;
 
-import org.example.model.GerenteModel;
-import org.example.util.LoggerUtil;
+import br.com.empresa.model.GerenteModel;
+import br.com.empresa.util.LoggerUtil;
 
 import java.sql.*;
 import java.util.ArrayList;
