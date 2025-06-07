@@ -1,5 +1,6 @@
 package br.com.empresa.util;
 
+import br.com.empresa.model.FuncionarioModel;
 import br.com.empresa.model.PessoaModel;
 
 public class ValidacoesUtil {
@@ -40,15 +41,19 @@ public class ValidacoesUtil {
             System.out.println("Pessoa inválido");
             return false;
         }
-        return true;
+        return !pessoa.getNome().isBlank();
     }
 
-    public static boolean validaID(int id){
-        if(id < 0){
+    public static boolean validaID(int id) {
+        if (id <= 0) {
             System.out.println("ID inválido");
             return false;
         }
         return true;
+    }
+
+    public static boolean validaFuncionario(FuncionarioModel funcionario) {
+        return validaPessoa(funcionario) && validaID(funcionario.getId()) && validaSalario(funcionario.getSalario()) && validaCpf(funcionario.getCpf());
     }
 
 }
