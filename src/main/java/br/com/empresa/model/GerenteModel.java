@@ -10,6 +10,9 @@ public class GerenteModel extends FuncionarioModel{
         setEquipe(equipe);
     }
 
+    public GerenteModel() {
+    }
+
     public int getEquipe() {
         return equipe;
     }

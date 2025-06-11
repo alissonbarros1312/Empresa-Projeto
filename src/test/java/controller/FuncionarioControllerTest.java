@@ -7,7 +7,6 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
 
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
@@ -17,7 +16,8 @@ import static org.mockito.Mockito.*;
 public class FuncionarioControllerTest {
     private FuncionarioController controller;
     private FuncionarioService serviceMock;
-    private FuncionarioModel funcionarioTeste = new FuncionarioModel("teste", "12345678910", "Tecnologia", 2500);
+    private FuncionarioModel funcionarioTeste = new FuncionarioModel("Teste", "12345678910", "Tecnologia", 2500);
+    private FuncionarioModel funcionarioCopia = new FuncionarioModel(funcionarioTeste.getNome(), funcionarioTeste.getCpf(), funcionarioTeste.getSetor(), funcionarioTeste.getSalario());
 
     @BeforeEach
     void setUp() {
@@ -49,14 +49,14 @@ public class FuncionarioControllerTest {
 
     @Test
     void deveAtualizarFuncionario(){
-        //FuncionarioModel funcionario = new FuncionarioModel();
-        funcionarioTeste.setId(1);
-        when(serviceMock.atualizar(funcionarioTeste)).thenReturn(true);
+        FuncionarioModel funcionario = new FuncionarioModel("Teste", "12345678910", "Tecnologia", 2500);
+        funcionario.setId(1);
+        when(serviceMock.atualizar(funcionario)).thenReturn(true);
 
-        boolean sucesso = controller.atualizarFuncionario(funcionarioTeste);
+        boolean sucesso = controller.atualizarFuncionario(funcionario);
 
         assertTrue(sucesso);
-        verify(serviceMock).atualizar(funcionarioTeste);
+        verify(serviceMock).atualizar(funcionario);
     }
 
     @Test
@@ -74,15 +74,14 @@ public class FuncionarioControllerTest {
 
     @Test
     void naoDeveAtualizarFuncionarioQuandoServiceFalhar(){
-        FuncionarioModel funcionario = new FuncionarioModel();
-        funcionario.setId(123);
+        funcionarioCopia.setId(123);
 
-        when(serviceMock.atualizar(funcionario)).thenReturn(false);
+        when(serviceMock.atualizar(funcionarioCopia)).thenReturn(false);
 
-        boolean sucesso = controller.atualizarFuncionario(funcionario);
+        boolean sucesso = controller.atualizarFuncionario(funcionarioCopia);
 
         assertFalse(sucesso);
-        verify(serviceMock).atualizar(funcionario);
+        verify(serviceMock).atualizar(funcionarioCopia);
     }
 
     @Test
@@ -125,9 +124,9 @@ public class FuncionarioControllerTest {
 
         when(serviceMock.remover(idInvalido)).thenReturn(false);
 
-        boolean sucesso = controller.removerFuncionario(idInvalido);
-        assertFalse(sucesso);
-        verify(serviceMock, never()).remover(any());
+        boolean falha = controller.removerFuncionario(idInvalido);
+        assertFalse(falha);
+        verify(serviceMock, never()).remover(anyInt());
     }
 
     @Test
@@ -151,7 +150,7 @@ public class FuncionarioControllerTest {
         FuncionarioModel funcionario = controller.buscarFuncionarioPorId(idInvalido);
 
         assertNull(funcionario);
-        verify(serviceMock, never()).buscaPorId(any());
+        verify(serviceMock, never()).buscaPorId(anyInt());
     }
 
     @Test

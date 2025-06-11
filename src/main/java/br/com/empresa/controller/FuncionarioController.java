@@ -15,7 +15,7 @@ public class FuncionarioController {
     }
 
     public int criarFuncionario(FuncionarioModel funcionario){
-        if(funcionario == null || ValidacoesUtil.validaFuncionario(funcionario)){
+        if(funcionario == null || !ValidacoesUtil.validaFuncionarioSemId(funcionario)){
             LoggerUtil.logInfo("[FUNCIONARIO CONTROLLER] FUNCIONARIO INVALIDO");
             return -1;
         }
@@ -23,7 +23,7 @@ public class FuncionarioController {
     }
 
     public boolean atualizarFuncionario(FuncionarioModel funcionario){
-        if(funcionario == null || ValidacoesUtil.validaFuncionario(funcionario)){
+        if(funcionario == null || !ValidacoesUtil.validaFuncionarioComId(funcionario)){
             LoggerUtil.logInfo("[FUNCIONARIO CONTROLLER] FUNCIONARIO INVALIDO");
             return false;
         }
