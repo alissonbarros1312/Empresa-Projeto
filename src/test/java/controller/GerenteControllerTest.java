@@ -1,7 +1,6 @@
 package controller;
 
 import br.com.empresa.controller.GerenteController;
-import br.com.empresa.model.FuncionarioModel;
 import br.com.empresa.model.GerenteModel;
 import br.com.empresa.service.GerenteService;
 import org.junit.jupiter.api.BeforeEach;
@@ -78,13 +77,15 @@ public class GerenteControllerTest {
     }
 
     @Test
-    void naoDeveRemoverGerenteComIdInexistente(){
-        int idInvalido = 999;
-        when(serviceMock.remover(idInvalido)).thenReturn(false);
+    void naoDeveAtualizarGerenteComDadosInvalidos(){
+        gerenteCopia.setNome(" ");
 
-        boolean resultado = controller.removerGerente(idInvalido);
+        when(serviceMock.atualizar(gerenteCopia)).thenReturn(false);
+
+        boolean resultado = controller.atualizarGerente(gerenteCopia);
         assertFalse(resultado);
         verify(serviceMock, never()).atualizar(any());
+        gerenteCopia.setNome(gerente.getNome());
     }
 
     @Test
@@ -96,6 +97,28 @@ public class GerenteControllerTest {
         boolean sucesso = controller.removerGerente(id);
         assertTrue(sucesso);
         verify(serviceMock).remover(id);
+    }
+
+    @Test
+    void naoDeveRemoverGerenteComIdInexistente(){
+        int idInexistente = 999;
+        when(serviceMock.remover(idInexistente)).thenReturn(false);
+
+        boolean resultado = controller.removerGerente(idInexistente);
+        assertFalse(resultado);
+        verify(serviceMock).remover(idInexistente);
+    }
+
+    @Test
+    void naoDeveRemoverGerenteComIdInvalido(){
+        int idInvalido = -1;
+
+        when(serviceMock.remover(idInvalido)).thenReturn(false);
+
+        boolean resultado = controller.removerGerente(idInvalido);
+
+        assertFalse(resultado);
+        verify(serviceMock, never()).remover(anyInt());
     }
 
     @Test
@@ -112,12 +135,42 @@ public class GerenteControllerTest {
     }
 
     @Test
+    void naoDeveRetornarGerenteComIdInvalido(){
+        int idInvalido = -1;
+
+        when(serviceMock.buscarPorId(idInvalido)).thenReturn(null);
+
+        GerenteModel gerente = controller.buscarGerentePorId(idInvalido);
+        assertNull(gerente);
+        verify(serviceMock, never()).buscarPorId(anyInt());
+    }
+
+    @Test
+    void naoDeveRetornarGerenteComIdInexistente(){
+        int idInexistente = 999;
+        when(serviceMock.buscarPorId(idInexistente)).thenReturn(null);
+
+        GerenteModel gerente = controller.buscarGerentePorId(idInexistente);
+        assertNull(gerente);
+        verify(serviceMock).buscarPorId(idInexistente);
+    }
+
+    @Test
     void deveListarTodosGerentes(){
         when(serviceMock.listarTodos()).thenReturn(Arrays.asList(new GerenteModel(), new GerenteModel()));
 
         List<GerenteModel> resultado = controller.listarTodos();
 
         assertEquals(2, resultado.size());
+        verify(serviceMock).listarTodos();
+    }
+
+    @Test
+    void deveRetornarListaVaziaAoListarTodos(){
+        when(serviceMock.listarTodos()).thenReturn(Arrays.asList());
+
+        List<GerenteModel> gerentes = controller.listarTodos();
+        assertEquals(0, gerentes.size());
         verify(serviceMock).listarTodos();
     }
 }
